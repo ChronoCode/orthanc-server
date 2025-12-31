@@ -1,0 +1,132 @@
+
+/* Full-height page */
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #ffffff;           /* solid white background */
+  color: #111111;                /* dark readable text */
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* App container fills the viewport */
+.app {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header area (if present) */
+.app-header {
+  background: #f8fafc;           /* light gray/blue */
+  color: #111111;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.75rem 1rem;
+}
+
+/* Main area stretches and scrolls */
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;                 /* allow children to use overflow */
+}
+
+/* Table wrapper scrolls if needed */
+.table-container {
+  flex: 1;
+  overflow: auto;
+  padding: 0.75rem 1rem;
+}
+
+/* Table styles */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.table th, .table td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.5rem 0.75rem;
+  vertical-align: top;
+  color: #111111;
+  background: #ffffff;           /* white bg for readability */
+}
+
+.table th {
+  text-align: left;
+  font-weight: 600;
+  background: #f9fafb;
+}
+
+.table tbody tr:hover td {
+  background: #f3f4f6;           /* subtle hover */
+}
+
+/* Details row content */
+.details-panel {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+}
+
+/* Compact tag lists */
+.tags-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 1rem;
+}
+
+.tag-item {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tag-key {
+  color: #374151;                /* gray-700 */
+  min-width: 160px;
+  font-weight: 600;
+}
+
+.tag-value {
+  color: #111111;
+  word-break: break-word;
+}
+
+/* Buttons inside accordion */
+.row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #111111;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: #f3f4f6;
+}
+
+.button.danger {
+  color: #b91c1c;
+  border-color: #fca5a5;
+  background: #fff1f2;
+}
+
+.button.danger:hover {
+  background: #ffe4e6;
+}

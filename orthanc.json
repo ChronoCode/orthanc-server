@@ -1,0 +1,35 @@
+
+{
+  "Name": "Orthanc (Local Dev)",
+  "AuthenticationEnabled": false,
+  "RemoteAccessAllowed": true,
+
+  "OrthancExplorer2": {
+    "Enable": true,
+    "IsDefaultUI": true,
+
+    "UiOptions": {
+      "EnableShares": true,
+      "DefaultShareDuration": 0,
+      "ShareDurations": [0, 7, 15, 30, 90, 365],
+      "EnableOpenInOhifViewer3": true,
+      "OhifViewer3PublicRoot": "http://localhost/ohif/"
+    },
+
+    "Tokens": {
+      "ShareType": "stone-viewer-publication"
+    }
+  },
+
+  "Authorization": {
+    "WebServiceTokenCreationBaseUrl": "http://orthanc-auth-service:8000/tokens/",
+    "WebServiceUsername": "share-user",
+    "WebServicePassword": "change-me"
+  },
+
+  "DicomWeb": {
+    "PublicRoot": "/orthanc/dicom-web"
+  },
+
+  "HttpDescribeErrors": true
+}

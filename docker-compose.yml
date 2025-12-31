@@ -1,0 +1,72 @@
+
+services:
+  # Reverse proxy + static host for OHIF and routes to Orthanc
+  nginx:
+    image: orthancteam/orthanc-nginx:25.8.1
+    depends_on:
+      - orthanc
+      - orthanc-auth-service
+      - ohif
+    restart: unless-stopped
+    ports:
+      - '80:80'
+    environment:
+      # Enable built-in locations for Orthanc and OHIF; HTTPS disabled for localhost
+      ENABLE_ORTHANC: 'true'
+      ENABLE_ORTHANC_TOKEN_SERVICE: 'false'
+      ENABLE_HTTPS: 'false'
+      ENABLE_OHIF: 'true'
+    # Optional: mount extra Nginx config if you want custom routes (/series/, etc.)
+    # volumes:
+    #   - ./nginx/custom.conf:/etc/nginx/conf.d/custom.conf:ro
+
+  # Orthanc server
+  orthanc:
+    image: orthancteam/orthanc:25.8.2
+    restart: unless-stopped
+    depends_on:
+      - orthanc-db
+    environment:
+      # Plugins
+      STONE_WEB_VIEWER_PLUGIN_ENABLED: 'false'
+      DICOM_WEB_PLUGIN_ENABLED: 'true'
+      # PostgreSQL plugin env mapping (provided by orthancteam image)
+      ORTHANC__POSTGRESQL__HOST: 'orthanc-db'
+      ORTHANC__POSTGRESQL__TRANSACTION_MODE: 'ReadCommitted'
+      ORTHANC__ORTHANC_EXPLORER_2__ENABLE: "true"
+      ORTHANC__ORTHANC_EXPLORER_2__IS_DEFAULT_UI: "true"
+    volumes:
+      - ./orthanc.json:/etc/orthanc/orthanc.json:ro
+      # If you switch to SQLite for simple local testing:
+      # - ./data/orthanc-storage:/var/lib/orthanc/db
+
+  # Optional—only if you plan to use share tokens now.
+  orthanc-auth-service:
+    image: orthancteam/orthanc-auth-service:25.8.1
+    restart: unless-stopped
+    environment:
+      SECRET_KEY: 'local-dev-secret-key'
+      PUBLIC_ORTHANC_ROOT: 'http://localhost/shares/'
+      PUBLIC_LANDING_ROOT: 'http://localhost/shares/ui/app/token-landing.html'
+      PUBLIC_OHIF_ROOT: 'http://localhost/ohif/'
+      USERS: |
+        {
+          "share-user": "change-me"
+        }
+
+  # OHIF viewer (v3)
+  ohif:
+    image: orthancteam/ohif-v3:25.8.1
+    restart: unless-stopped
+    # Uncomment to override OHIF defaults (datasource, logo, etc.)
+    # volumes:
+    #   - ./ohif-app-config.js:/usr/share/nginx/html/app-config.js:ro
+
+  # PostgreSQL database for Orthanc (as in your Azure setup)
+  orthanc-db:
+    image: postgres:14
+    restart: unless-stopped
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: 'trust'
+    volumes:
+      - ./data/orthanc-db:/var/lib/postgresql/data
