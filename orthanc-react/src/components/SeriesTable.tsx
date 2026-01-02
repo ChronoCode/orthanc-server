@@ -40,14 +40,13 @@ const VISIBLE_COLUMNS: { key: string; label: string; from: "requested" | "comput
 
 /**
  * Additional DICOM tags to display (two pairs per row).
- * As requested:
- *  - Remove: AccessionNumber, SeriesNumber, StudyID
- *  - Keep: StudyInstanceUID (Study UID), SeriesInstanceUID, Institution, Referring Physician, Protocol, Study Description
- *  - Add: PatientSex ("Patient Sex"), Manufacturer
+ * Requested set:
+ *  - Add: PatientSex, Manufacturer
+ *  - Keep: InstitutionName, ReferringPhysicianName, ProtocolName, StudyDescription, StudyInstanceUID, SeriesInstanceUID
  */
 const COMMON_DICOM_EXTRA_KEYS: string[] = [
-  "PatientSex",          // ✅ NEW (Patient main tags)
-  "Manufacturer",        // ✅ NEW (equipment info, often present in MainDicomTags)
+  "PatientSex",
+  "Manufacturer",
   "InstitutionName",
   "ReferringPhysicianName",
   "ProtocolName",
@@ -97,7 +96,6 @@ export function SeriesTable({
 }: SeriesTableProps) {
   const [expandedId, setExpandedId] = React.useState<string | null>(null);
   const [sort, setSort] = React.useState<SortState>(null);
-  const colCount = VISIBLE_COLUMNS.length;
 
   const toggleExpand = (id: string) => setExpandedId((prev) => (prev === id ? null : id));
 
@@ -278,7 +276,7 @@ export function SeriesTable({
                             rawKey: key,
                           }));
 
-                        const rows: JSX.Element[] = [];
+                        const rows: React.ReactElement[] = []; // <- fix type
                         for (let i = 0; i < extras.length; i += 2) {
                           const a = extras[i];
                           const b = extras[i + 1];

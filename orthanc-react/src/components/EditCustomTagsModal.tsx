@@ -476,13 +476,6 @@ export function EditCustomTagsModal({
             {error}
           </div>
         )}
-
-        {/* Footer actions */}
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem", marginTop: "1rem" }}>
-          <button className="button" onClick={onClose} disabled={saving}>
-            Close
-          </button>
-        </div>
       </div>
     </div>
   );

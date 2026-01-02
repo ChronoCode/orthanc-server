@@ -1,3 +1,4 @@
+
 services:
   # Reverse proxy + static host for OHIF and routes to Orthanc
   nginx:
@@ -6,7 +7,6 @@ services:
       - orthanc
       - orthanc-auth-service
       - ohif
-      - orthanc-react   # NEW: ensure SPA starts before proxy
     restart: unless-stopped
     ports:
       - '80:80'
@@ -16,9 +16,9 @@ services:
       ENABLE_ORTHANC_TOKEN_SERVICE: 'false'
       ENABLE_HTTPS: 'false'
       ENABLE_OHIF: 'true'
-    volumes:
-      # Custom Nginx config to add /app route for React SPA
-      - ./nginx/custom.conf:/etc/nginx/conf.d/custom.conf:ro
+    # Optional: mount extra Nginx config if you want custom routes (/series/, etc.)
+    # volumes:
+    #   - ./nginx/custom.conf:/etc/nginx/conf.d/custom.conf:ro
 
   # Orthanc server
   orthanc:
@@ -70,19 +70,3 @@ services:
       POSTGRES_HOST_AUTH_METHOD: 'trust'
     volumes:
       - ./data/orthanc-db:/var/lib/postgresql/data
-
-  # React SPA frontend (dockerized build + nginx runtime)
-  orthanc-react:
-    build:
-      context: ./orthanc-react
-      dockerfile: Dockerfile
-    image: orthanc-react:latest
-    restart: unless-stopped
-    environment:
-      ORTHANC_BASE: "/orthanc"  # reverse-proxied path to Orthanc REST
-      OHIF_ROOT: "/ohif"        # reverse-proxied path to OHIF
-    healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost/config.js | grep -q '__APP_CONFIG'"]
-      interval: 10s
-      timeout: 3s
-      retries: 10
